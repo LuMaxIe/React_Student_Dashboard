@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './redux/app/store';
-import './index.css';
 import App from './App';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -18,6 +17,3 @@ root.render(
     </Provider>
   </React.StrictMode>
 );
-
-
- 
