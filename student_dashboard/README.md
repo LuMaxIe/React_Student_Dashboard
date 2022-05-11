@@ -9,6 +9,7 @@
 - [x] data sort: students by average grades (high-low & low-high)
 
 2. Then create Components (redux included)
+- Header / navbar
 - Dashboard
 - Chart
 - Filter options
