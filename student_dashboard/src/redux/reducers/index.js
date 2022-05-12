@@ -1,8 +1,12 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import songTracker from "./songTracker";
+import assignmentScores from "./assignmentScores";
+import graphDataState from "./graphDataState";
+import graphDisplayState from "./graphDisplayState"
 
 const rootReducer = combineReducers({
-  songTracker,
+  assignmentScores,
+  graphDataState,
+  graphDisplayState,
 })
 
 export default rootReducer

@@ -1,13 +1,27 @@
-export const addSong = (songObj) => {
+export const addScore = (scoreObject) => {
   return {
     type: 'ADD_SONG',
-    payload: songObj
+    payload: scoreObject,
   }
 }
 
-export const removeSong = (indentifier) => {
+export const setGraphData = (rawData) => {
   return {
-    type: 'REMOVE_SONG',
-    payload: indentifier,
+    type: 'ASSIGNMENT_TOTALS',
+    payload: rawData,
+  }
+}
+
+export const setGraphDataStudents = (rawData) => {
+  return {
+    type: 'STUDENT_TOTALS',
+    payload: rawData,
+  }
+}
+
+export const adjustGraphDisplay = (displayObject) => {
+  return {
+    type: 'ADDJUST_GRAPH_DISPLAY',
+    payload: displayObject
   }
 }

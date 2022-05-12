@@ -7,15 +7,15 @@ const dataSort = (data, sortTypeForAverages='combinedAverages', sortTypeForRaw='
           case 'combinedAverages':
             return [a.averageDifficultyScore + a.averageFunFactorScore] - [b.averageDifficultyScore + b.averageFunFactorScore]
           case 'combinedAmounts':
-            return [a.amountOfDifficultyScores + a.amountOfFunFactorScores] - [b.amountOfDifficultyScores + b.amountOfFunFactorScores]
+            return [a.Difficulty Scores + a.Fun Factor Scores] - [b.Difficulty Scores + b.Fun Factor Scores]
           case 'averageDifficultyScore':
             return a.averageDifficultyScore - b.averageDifficultyScore;
           case 'averageFunFactorScore':
             return a.averageDifficultyScore - b.averageDifficultyScore;
-          case 'amountOfDifficultyScores':
-            return a.amountOfDifficultyScores - b.amountOfDifficultyScores;
-          case 'amountOfFunFactorScores':
-            return a.amountOfFunFactorScores - b.amountOfFunFactorScores;
+          case 'Difficulty Scores':
+            return a.Difficulty Scores - b.Difficulty Scores;
+          case 'Fun Factor Scores':
+            return a.Fun Factor Scores - b.Fun Factor Scores;
           default:
             break;
         }
