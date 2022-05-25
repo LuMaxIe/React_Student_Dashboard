@@ -17,7 +17,6 @@ const counter = (data, labels, n_end, key, n_start) => {
 }
   // Fetch 'data' & 'label' from state
 const data = (graphData, displayObject) => {
-  console.log(graphData);
   const labels = Object.keys(graphData);
   const data = {
     labels: function () {
@@ -60,7 +59,6 @@ const data = (graphData, displayObject) => {
       },
     ].filter((x) => displayObject[x.label]),
   };
-  console.log(data);
   return data
 }
 
