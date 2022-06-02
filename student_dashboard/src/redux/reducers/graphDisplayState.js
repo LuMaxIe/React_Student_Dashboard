@@ -1,10 +1,9 @@
 const initialDisplayState = {
   'Avg difficulty': true,
   'Avg fun': true,
-  'Total difficulty scores': true,
-  'Total fun scores': true,
   'Display Count': null,
   'Display count start': null,
+  'Data Type': 'assignment',
 };
 
 const graphDisplayState = (state = initialDisplayState, action) => {

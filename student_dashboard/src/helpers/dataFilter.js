@@ -27,8 +27,3 @@ const dataFilter = (dataArray, filterObject) => {
 
 export default dataFilter
 
-// const myObj = {
-//   filterEntireObjectOutIf: {
-//   },
-//   filterObjectEntries: []
-// }

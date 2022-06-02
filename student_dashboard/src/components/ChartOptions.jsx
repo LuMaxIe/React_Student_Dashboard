@@ -2,39 +2,36 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated'
 import { useSelector, useDispatch } from 'react-redux';
-import { setGraphDataStudents, setGraphData, adjustGraphDisplay } from '../redux/actions';
+import { adjustGraphDisplay } from '../redux/actions';
 
 const animatedComponents = makeAnimated();
 
 export const ChartOptions = () => {
 
   const dispatch = useDispatch();
-  const dataInput = useSelector(state => state.rootReducer.assignmentScores);
   const graphSettings = useSelector(state => state.rootReducer.graphDisplayState);
-  const dataState = useSelector(state => state.rootReducer.graphDataState)
+  const assignmentScores = useSelector(state => state.rootReducer.assignmentScores)
 
   const options = [
-    { value: 'students', label: 'Students'},
     { value: 'assignments', label: 'Assignments'},
+    { value: 'students', label: 'Students'},
   ]
   const displayOptions = [
     { value: 'Avg difficulty', label: 'Avg difficulty'},
     { value: 'Avg fun', label: 'Avg fun'},
-    { value: 'Total difficulty scores', label: 'Total difficulty scores'},
-    { value: 'Total fun scores', label: 'Total fun scores'},
+    { value: 'None', label: 'None'}
   ]
 
-  const [dataFocus, setDataFocus] = useState('assignment');
   const [graphDisplaySettings, setGraphDisplaySettings] = useState(graphSettings);
+  const [selectedDisplayOptions, setSelectedDisplayOptions] = useState(null)
+  const [sliceOptions, setSliceOptions] = useState([...new Set(assignmentScores.map(
+    x => x[graphSettings['Data Type']]
+  ))].map((x, i) => {
+    return ({label: i+1, value: i+1})
+  }))
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if(dataFocus === 'students') {
-      dispatch(setGraphDataStudents(dataInput));
-    }
-    if(dataFocus === 'assignments') {
-      dispatch(setGraphData(dataInput));
-    }
     if(graphDisplaySettings !== graphSettings) {
       dispatch(adjustGraphDisplay(graphDisplaySettings));
     }
@@ -48,16 +45,24 @@ export const ChartOptions = () => {
           className='basic-single'
           classNamePrefix='select'
           options={options}
+          placeholder={graphDisplaySettings['Data Type'] === 'assignment' ? 'Assignments' : 'Students'}
           name='Data focus'
-          onChange={(e) => setDataFocus(e.value)}
+          onChange={(e) => {
+            const newSettings = JSON.parse(JSON.stringify(graphDisplaySettings));
+            newSettings['Data Type'] = e.value === 'students' ? 'name' : 'assignment';
+            setGraphDisplaySettings(newSettings);
+            setSliceOptions([...new Set(assignmentScores.map(
+              x => x[newSettings['Data Type']]
+            ))].map((x, i) => {
+              return ({label: i+1, value: i+1})
+            }))
+          }}
         />
         <label>Data slice start</label>
         <Select 
           className='basic-single-number-end'
           classNamePrefix='select'
-          options={Object.keys(dataState).map((x, i) => {
-            return { value: i+1, label:i+1}
-          })}
+          options={sliceOptions}
           name='Data focus'
           onChange={(e) => {
             const newSettings = JSON.parse(JSON.stringify(graphDisplaySettings));
@@ -69,9 +74,7 @@ export const ChartOptions = () => {
         <Select 
           className='basic-single-number'
           classNamePrefix='select'
-          options={Object.keys(dataState).map((x, i) => {
-            return { value: i+1, label:i+1}
-          })}
+          options={sliceOptions}
           name='Data focus'
           onChange={(e) => {
             const newSettings = JSON.parse(JSON.stringify(graphDisplaySettings));
@@ -86,20 +89,31 @@ export const ChartOptions = () => {
           options={displayOptions}
           name='Data focus'
           components={animatedComponents}
+          value={selectedDisplayOptions}
           onChange={(e) => {
             const newSettings = JSON.parse(JSON.stringify(graphDisplaySettings));
             const settingKeys = Object.keys(newSettings);
-            const adjustedSettings = e.map((s) => s.value);
-
-            settingKeys.forEach((setting) => {
-              if(!adjustedSettings.includes(setting) && setting !== 'Display Count' && setting !== 'Display count start') {
-                newSettings[setting] = false;
-              }
-              if(adjustedSettings.includes(setting) && setting !== 'Display Count' && setting !== 'Display count start'){
-                newSettings[setting] = true;
-              }
-            });
-            setGraphDisplaySettings(newSettings)
+            const isNone = e.find(o => o.value === 'None') === undefined;
+            console.log(isNone);
+            if (!isNone) {
+              newSettings['Avg fun'] = false
+              newSettings['Avg difficulty'] = false
+              setSelectedDisplayOptions(null)
+            }
+            if (isNone) {
+              const adjustedSettings = e.map((s) => s.value);
+              const excludedUpdateSettings = ['Display Count', 'Display count start', 'Data Type']
+              settingKeys.forEach((setting) => {
+                if(!adjustedSettings.includes(setting) && !excludedUpdateSettings.includes(setting)) {
+                  newSettings[setting] = false;
+                }
+                if(adjustedSettings.includes(setting) && !excludedUpdateSettings.includes(setting)){
+                  newSettings[setting] = true;
+                }
+              });
+              setSelectedDisplayOptions(e);
+            }
+            setGraphDisplaySettings(newSettings);
           }}
           isMulti={true}
         />
@@ -110,8 +124,3 @@ export const ChartOptions = () => {
     </div>
   )
 }
-
-//Assignment
-//Studentname
-//grade fun
-//grade diff
