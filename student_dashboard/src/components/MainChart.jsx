@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
-import newChartDataCreator from '../helpers/newChartCreator'
+import newChartDataCreator from '../helpers/chartCreator'
 import { useSelector } from 'react-redux';
 
 ChartJS.register(
@@ -25,10 +25,10 @@ export const MainChart = () => {
 
   const rawData = useSelector(state => state.rootReducer.assignmentScores);
   const baseDisplay = useSelector(state => state.rootReducer.graphDisplayState);
-  const baseData = newChartDataCreator(rawData, baseDisplay);
+
   return (
     <div className='chart-container'>
-      <Chart className='main-chart' type='bar' data={baseData}/>
+      <Chart className='main-chart' type='bar' data={newChartDataCreator(rawData, baseDisplay)}/>
     </div>
   )
 }

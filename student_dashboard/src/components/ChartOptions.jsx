@@ -1,8 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable default-case */
 import React, { useState } from 'react';
 import Select from 'react-select';
-import makeAnimated from 'react-select/animated'
+import makeAnimated from 'react-select/animated';
+import CreateableSelect from 'react-select/creatable';
 import { useSelector, useDispatch } from 'react-redux';
 import { adjustGraphDisplay } from '../redux/actions';
+import { StudentPicker } from './StudentPicker';
 
 const animatedComponents = makeAnimated();
 
@@ -10,20 +14,24 @@ export const ChartOptions = () => {
 
   const dispatch = useDispatch();
   const graphSettings = useSelector(state => state.rootReducer.graphDisplayState);
-  const assignmentScores = useSelector(state => state.rootReducer.assignmentScores)
+  const assignmentScores = useSelector(state => state.rootReducer.assignmentScores);
 
   const options = [
     { value: 'assignments', label: 'Assignments'},
     { value: 'students', label: 'Students'},
-  ]
+  ];
   const displayOptions = [
     { value: 'Avg difficulty', label: 'Avg difficulty'},
     { value: 'Avg fun', label: 'Avg fun'},
+    { value: 'Difficulty bars', label: 'Difficulty bars'},
+    { value: 'Fun bars', label: 'Fun bars'},
     { value: 'None', label: 'None'}
-  ]
+  ];
 
   const [graphDisplaySettings, setGraphDisplaySettings] = useState(graphSettings);
-  const [selectedDisplayOptions, setSelectedDisplayOptions] = useState(null)
+  const [selectedDisplayOptions, setSelectedDisplayOptions] = useState(null);
+  const [inputValue, setInputValue] = useState(null);
+  const [searchValue, setSearchValue] = useState([])
   const [sliceOptions, setSliceOptions] = useState([...new Set(assignmentScores.map(
     x => x[graphSettings['Data Type']]
   ))].map((x, i) => {
@@ -31,9 +39,22 @@ export const ChartOptions = () => {
   }))
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if(graphDisplaySettings !== graphSettings) {
       dispatch(adjustGraphDisplay(graphDisplaySettings));
+    }
+  }
+  
+  const handleKeyDown = (event) => {
+    if (!inputValue) return;
+    switch (event.key) {
+      case 'Enter':
+      case 'Tab':
+      setSearchValue([...searchValue, {label: inputValue, value: inputValue}]);
+      const newSettings = JSON.parse(JSON.stringify(graphDisplaySettings));
+      newSettings['Search key words'].push(inputValue);
+      setGraphDisplaySettings(newSettings);
+      event.preventDefault();
     }
   }
 
@@ -82,6 +103,8 @@ export const ChartOptions = () => {
             setGraphDisplaySettings(newSettings);
           }}
         />
+        <label>Student Picker</label>
+        <StudentPicker />
         <label>Graph Display</label>
         <Select 
           className='basic-multi'
@@ -94,7 +117,6 @@ export const ChartOptions = () => {
             const newSettings = JSON.parse(JSON.stringify(graphDisplaySettings));
             const settingKeys = Object.keys(newSettings);
             const isNone = e.find(o => o.value === 'None') === undefined;
-            console.log(isNone);
             if (!isNone) {
               newSettings['Avg fun'] = false
               newSettings['Avg difficulty'] = false
@@ -116,6 +138,23 @@ export const ChartOptions = () => {
             setGraphDisplaySettings(newSettings);
           }}
           isMulti={true}
+        />
+        <label>Search</label>
+        <CreateableSelect
+          menuIsOpen={false}
+          components={{DropdownIndicator: null}}
+          placeholder={'Ex: Evelyn {enter} >2 {enter}'}
+          onInputChange={(e) => setInputValue(e)}
+          value={searchValue}
+          onKeyDown={handleKeyDown}
+          isMulti
+          onChange={(e) => { if (e.length === 0) {
+              setSearchValue([]);
+              const newSettings = JSON.parse(JSON.stringify(graphDisplaySettings));
+              newSettings['Search key words'] = [];
+              setGraphDisplaySettings(newSettings);
+            } 
+          }}
         />
         <button type='submit'>
           Apply
