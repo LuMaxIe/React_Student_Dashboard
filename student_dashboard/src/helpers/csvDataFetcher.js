@@ -1,23 +1,18 @@
-const fs = require('fs');
-const csv = require('csv-parse');
-
-const csvDataFetcher = (fileName) => {
-  const result = [];
-  return new Promise((resolve, reject) => {
-    fs.createReadStream(`../data/${fileName}.csv`)
-    .on('error', error => {
-      reject(error)
-    })
-    .pipe(csv.parse({
-      columns: true
-    }))
-    .on('data', (row) => {
-      result.push(row)
-    })
-    .on('end', () => {
-      resolve(result)
-    })
+const csvDataToObjectArray = (dataString) => {
+  const splitString = dataString.split('\r\n');
+  const splitHeaders = splitString.splice(0, 1)[0].split(',');
+  const parsed = splitString.map((x) => {
+    const splitScore = x.split(',');
+    return {
+      [splitHeaders[0]]: splitScore[0],
+      [splitHeaders[1]]: splitScore[1],
+      [splitHeaders[2]]: splitScore[2],
+      [splitHeaders[3]]: splitScore[3],
+    }
   })
+  return parsed
 }
 
-export default csvDataFetcher;
+export default csvDataToObjectArray;
+
+

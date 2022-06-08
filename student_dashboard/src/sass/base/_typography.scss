@@ -1,4 +1,13 @@
 body {
   color: $textColor;
   font: normal 125% / 1.4 $text-font-stack;
+  @include viewPortRespond(small) {
+    font-size: smaller;
+  }
+  @include viewPortRespond(medium) {
+    font-size: medium;
+  }
+  @include viewPortRespond(large) {
+    font-size: large;
+  }
 }

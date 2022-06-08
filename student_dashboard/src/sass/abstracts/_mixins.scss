@@ -14,3 +14,16 @@
     }
   }
 }
+
+
+@mixin viewPortRespond($breakpoint) {
+  @if($breakpoint == small) {
+    @media (min-width: 390px) { @content }
+  };
+  @if($breakpoint == medium) {
+    @media (min-width: 820px) { @content }
+  };
+  @if($breakpoint == large) {
+    @media (min-width: 1000px) { @content }
+  };
+}
